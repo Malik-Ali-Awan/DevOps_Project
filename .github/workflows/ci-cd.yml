@@ -3,8 +3,6 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -65,30 +63,11 @@ jobs:
       with:
         context: ./frontend
         push: true
-        tags: ${{ env.DOCKER_USERNAME }}/quote-saver-frontend:latest
+        tags: ${{ env.DOCKER_USERNAME }}/quote-frontend:latest
 
     - name: Build and push backend
       uses: docker/build-push-action@v4
       with:
         context: ./quote-api
         push: true
-        tags: ${{ env.DOCKER_USERNAME }}/quote-saver-backend:latest
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v3
-
-    - name: Configure kubectl
-      run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
-        export KUBECONFIG=kubeconfig.yaml
-
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/ 
+        tags: ${{ env.DOCKER_USERNAME }}/quote-quote-api:latest
