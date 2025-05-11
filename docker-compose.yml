@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - quote-api
+
+  quote-api:
+    build: ./quote-api
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-db:5432/quotes
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=quotes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data: 

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quote-api
+  namespace: quote-saver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quote-api
+  template:
+    metadata:
+      labels:
+        app: quote-api
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: quote-api
+        image: ahsan1753/quote-quote-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: quote-saver-config
+              key: DATABASE_URL
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quote-api
+  namespace: quote-saver
+spec:
+  selector:
+    app: quote-api
+  ports:
+  - port: 5000
+    targetPort: 5000
+  type: ClusterIP 
