@@ -4,21 +4,26 @@ metadata:
   name: quote-saver-ingress
   namespace: quote-saver
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5000"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
-  ingressClassName: nginx  
+  ingressClassName: nginx
   rules:
   - host: quote-saver.local
     http:
       paths:
-      - path: /
+      - path: /      # For frontend service
         pathType: Prefix
         backend:
           service:
             name: frontend
             port:
               number: 80
-      - path: /api
+      - path: /quotes  # For quote-api service
         pathType: Prefix
         backend:
           service:

@@ -4,5 +4,5 @@ metadata:
   name: quote-saver-config
   namespace: quote-saver
 data:
-  REACT_APP_API_URL: "http://quote-api"
+  REACT_APP_API_URL: "http://quote-saver.local"
   DATABASE_URL: "postgresql://postgres:postgres@postgres-db:5432/quotes" 

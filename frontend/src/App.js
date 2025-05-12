@@ -7,7 +7,7 @@ function App() {
   const [newQuote, setNewQuote] = useState('');
   const [error, setError] = useState('');
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://quote-api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://quote-saver.local';
 
   //const API_URL = process.env.REACT_APP_API_URL || '/api';
 
@@ -18,7 +18,7 @@ function App() {
 
   const fetchQuotes = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/quotes`);
+      const response = await axios.get(`${API_URL}/quotes`);
       setQuotes(response.data);
     } catch (err) {
       setError('Failed to fetch quotes');
@@ -31,7 +31,7 @@ function App() {
     if (!newQuote.trim()) return;
 
     try {
-      await axios.post(`${API_URL}/api/quotes`, { text: newQuote });
+      await axios.post(`${API_URL}/quotes`, { text: newQuote });
       setNewQuote('');
       fetchQuotes();
     } catch (err) {
